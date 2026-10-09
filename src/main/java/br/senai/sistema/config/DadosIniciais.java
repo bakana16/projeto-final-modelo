@@ -1,41 +1,70 @@
 package br.senai.sistema.config;
 
+import java.math.BigDecimal;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
+import br.senai.sistema.model.Servico;
 import br.senai.sistema.model.Perfil;
 import br.senai.sistema.model.Usuario;
+import br.senai.sistema.repository.ServicoRepository;
 import br.senai.sistema.repository.UsuarioRepository;
 
 /**
  * Carga inicial de dados: executa uma vez sempre que a aplicação sobe.
- *
- * Se ainda não existir nenhum usuário, cria dois usuários de exemplo:
- *   admin    / admin123     (perfil ADMIN)
- *   operador / operador123  (perfil OPERADOR)
- *
- * Nos próximos encontros você poderá acrescentar aqui dados de exemplo
- * do seu sistema (categorias, produtos, serviços...).
+ * Só insere os dados se a tabela ainda estiver vazia (por isso não duplica).
  */
 @Component
 public class DadosIniciais implements CommandLineRunner {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ServicoRepository servicoRepository;
 
-    public DadosIniciais(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public DadosIniciais(UsuarioRepository usuarioRepository,
+                         PasswordEncoder passwordEncoder,
+                         ServicoRepository servicoRepository) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+        this.servicoRepository = servicoRepository;
     }
 
     @Override
     public void run(String... args) {
+        // Cadastra usuários padrão se não existirem
         if (usuarioRepository.count() == 0) {
             usuarioRepository.save(new Usuario("Administrador", "admin",
                     passwordEncoder.encode("admin123"), Perfil.ADMIN));
             usuarioRepository.save(new Usuario("Operador", "operador",
                     passwordEncoder.encode("operador123"), Perfil.OPERADOR));
+        }
+
+        // Cadastra os 3 serviços de Ar Condicionado se não existirem
+        if (servicoRepository.count() == 0) {
+            Servico servico1 = new Servico(
+                "Instalação",
+                "Instalação de equipamento de ar condicionado",
+                180, // duração em minutos = 3 horas
+                new BigDecimal("350.00")
+            );
+
+            Servico servico2 = new Servico(
+                "Manutenção",
+                "Manutenção preventiva e corretiva de aparelhos",
+                120, // duração em minutos = 2 horas
+                new BigDecimal("200.00")
+            );
+
+            Servico servico3 = new Servico(
+                "Limpeza",
+                "Limpeza e higienização completa do aparelho",
+                90, // duração em minutos = 1 hora e 30 minutos
+                new BigDecimal("150.00")
+            );
+
+            servicoRepository.save(servico1);
+            servicoRepository.save(servico2);
+            servicoRepository.save(servico3);
         }
     }
 }
