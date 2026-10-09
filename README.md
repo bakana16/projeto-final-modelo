@@ -126,7 +126,7 @@ Como técnico, quero ver minha agenda, para saber se é Instalação, Manutenç�
     Servico "1" --> "*" Agendamento : referencia
     Agendamento "1" --> "*" HistoricoStatus : gera
 
-    note for Servico "Instalação — R$ 350,00 · 180 min\nManutenção — R$ 200,00 · 120 min\nLimpeza — R$ 150,00 · 90 min" -->
+    note for Servico "Instalação — R$ 350,00 · 180 min\nManutenção — R$ 200,00 · 120 min\nLimpeza — R$ 150,00 · 90 min"
  
 ---
 
